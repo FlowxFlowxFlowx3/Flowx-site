@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flowx</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* Reset */
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Montserrat', sans-serif; }
+
+  /* Splash screen */
+  #splash {
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:black;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+    flex-direction:column;
+    animation: fadeOut 1s ease 3s forwards;
+  }
+  #splash img { width:250px; animation: logoPulse 2s infinite alternate, logoMove 2s infinite alternate; }
+  #splash p { color:white; margin-top:1rem; font-size:1.2rem; }
+
+  @keyframes logoPulse { 0%{transform:scale(1);}50%{transform:scale(1.1);}100%{transform:scale(1);} }
+  @keyframes logoMove { 0%{transform:translateY(0);}100%{transform:translateY(-10px);} }
+  @keyframes fadeOut { to{opacity:0; visibility:hidden;} }
+
+  /* Body */
+  body { background:#1a0000; color:white; scroll-behavior: smooth; }
+  a { text-decoration:none; color:white; }
+  header {
+    background: linear-gradient(90deg, #FF4C00, #FFAA00); 
+    color:white; 
+    padding:2rem 1rem; 
+    text-align:center;
+  }
+  header h1 { font-size:3rem; margin-bottom:0.5rem; text-shadow:2px 2px 4px #000; }
+  header p { font-size:1.5rem; text-shadow:1px 1px 3px #000; }
+  nav { display:flex; justify-content:center; gap:2rem; margin-top:1rem; }
+  nav a { font-weight:bold; transition:0.3s; }
+  nav a:hover { color:#FFAA00; }
+
+  section { padding:4rem 1rem; max-width:1000px; margin:0 auto; }
+  h2 { font-size:2rem; margin-bottom:1rem; color:#FF4C00; text-shadow:1px 1px 2px #000; }
+
+  .news { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:2rem; }
+  .news-item {
+    background:#330000;
+    padding:1rem;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(255,76,0,0.5);
+    opacity:0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s forwards;
+  }
+  .news-item h3 { color:#FFAA00; margin-bottom:0.5rem; }
+  .news-item p { font-size:0.95rem; }
+
+  @keyframes fadeInUp { to { opacity:1; transform: translateY(0); } }
+
+  footer { background:#1a0000; color:white; text-align:center; padding:2rem 1rem; margin-top:2rem; }
+
+  button { background:#FF4C00; color:white; border:none; padding:0.75rem 1.5rem; border-radius:8px; cursor:pointer; transition:0.3s; }
+  button:hover { background:#FFAA00; color:#000; }
+
+  /* Formulaire admin */
+  #admin { margin-top:3rem; }
+  #admin input, #admin textarea { width:100%; padding:0.5rem; margin-bottom:0.5rem; border-radius:6px; border:none; }
+</style>
+</head>
+<body>
+
+<!-- Splash screen -->
+<div id="splash">
+  <img src="348d800c-5d15-4e0f-8a63-46dc2fc3303d.png" alt="Logo Flowx">
+  <p>Chargement...</p>
+</div>
+
+<header>
+  <h1>Flowx</h1>
+  <p>Une vision enflammée et puissante</p>
+  <nav>
+    <a href="#about">À propos</a>
+    <a href="#news">Actualités</a>
+    <a href="#contact">Contact</a>
+    <a href="#admin">Ajouter une news</a>
+  </nav>
+</header>
+
+<section id="about">
+  <h2>À propos de Flowx</h2>
+  <p>Flowx est une plateforme dynamique pour partager vos projets et nouveautés, notamment Minecraft et Stardew Valley, avec style et énergie.</p>
+</section>
+
+<section id="news">
+  <h2>Actualités</h2>
+  <div class="news" id="news-list"></div>
+</section>
+
+<section id="contact">
+  <h2>Contact</h2>
+  <p>Envoyez-nous un message ou suivez-nous sur les réseaux sociaux.</p>
+  <button onclick="alert('Formulaire de contact non implémenté')">Nous contacter</button>
+</section>
+
+<section id="admin">
+  <h2>Ajouter une news</h2>
+  <input type="text" id="news-title" placeholder="Titre de la news">
+  <textarea id="news-content" placeholder="Contenu de la news"></textarea>
+  <button onclick="addNews()">Publier</button>
+</section>
+
+<footer>
+  &copy; 2026 Flowx. Tous droits réservés.
+</footer>
+
+<script>
+  // Disparition splash
+  setTimeout(()=>{ document.getElementById('splash').style.display='none'; },3000);
+
+  // News initiales
+  const newsData = [
+    { title:"Nouvelle Minecraft", content:"Découvrez la dernière mise à jour avec des biomes étendus." },
+    { title:"Stardew Valley", content:"Un nouveau festival arrive dans le jeu !" }
+  ];
+
+  const newsList = document.getElementById("news-list");
+
+  // Affichage des news
+  function displayNews() {
+    newsList.innerHTML = '';
+    newsData.forEach((item,index)=>{
+      const div = document.createElement("div");
+      div.className = "news-item";
+      div.style.animationDelay = `${index*0.3}s`;
+      div.innerHTML = `<h3>${item.title}</h3><p>${item.content}</p>`;
+      newsList.appendChild(div);
+    });
+  }
+
+  displayNews();
+
+  // Ajouter news via formulaire
+  function addNews() {
+    const title = document.getElementById("news-title").value;
+    const content = document.getElementById("news-content").value;
+    if(title && content){
+      newsData.push({title, content});
+      displayNews();
+      document.getElementById("news-title").value='';
+      document.getElementById("news-content").value='';
+    } else {
+      alert("Remplis tous les champs !");
+    }
+  }
+</script>
+
+</body>
+</html>
